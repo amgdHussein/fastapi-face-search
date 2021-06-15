@@ -1,71 +1,51 @@
-import os
-from fastapi import File
+from os import listdir, remove
+from os.path import exists, join, splitext
+import glob
+
+from __init__ import DEFAULT_DIR, HOST, PORT
 from PIL import Image
-from .database_helper import read_image_file
+
 
 # Image File Description
-#   > image_name = **Majda El-Roumi.9898n393k.jpg**
-#       - person_name = Majda El-Roumi
-#       - image_id = 9898n393k
-#       - image_extension = jpg
-
-DEFAULT_DIR = os.path.join('database', 'images')
+#   > image_name = 9898n393k.jpg
+#       - post_id = 9898n393k
 
 
-async def retrieve_images() -> list:
+async def read_images() -> list:
     images = []
-    for image_name in os.listdir(DEFAULT_DIR):
-        known_person = await retrieve_image(file_name=image_name)
+    for image_name in listdir(DEFAULT_DIR):
+        known_person = await read_image(file_name=image_name)
         images.append(known_person)
-        # yield known_person, image_name
+
     return images
 
 
-async def add_image_file(file: File) -> Image.Image:
-    image = await read_image_file(file=file)
-    if image:
-        image.save(os.path.join(DEFAULT_DIR, file.filename))
-        return file.filename
-
-    raise Exception('The face cannot be recognized.')
+async def read_image(file_name: str) -> Image.Image:
+    image_path = await retrieve_image(file_name=file_name)
+    if image_path:
+        return Image.open(image_path)
 
 
-async def retrieve_image(file_name: str) -> Image.Image:
-    dir = os.path.join(DEFAULT_DIR, file_name)
-    if os.path.exists(dir):
-        return Image.open(dir)
+async def add_image_file(image: Image.Image, pid: str) -> str:
+    file_name = pid + splitext(image.filename)[1]
+    dir = join(DEFAULT_DIR, file_name)
+    image.save(dir)
+
+    return f'http://{HOST}:{PORT}/api/database/retrieve/image/{file_name}'
+
+
+async def retrieve_image(file_name: str) -> str:
+    dir = join(DEFAULT_DIR, file_name)
+    if exists(dir):
+        return dir
 
 
 async def delete_image_file(file_name: str) -> bool:
-    dir = os.path.join(DEFAULT_DIR, file_name)
-    if os.path.exists(dir):
-        os.remove(path=dir)
+    dir = join(DEFAULT_DIR, file_name)
+    file_dir = glob.glob(dir + '.*')
+
+    if file_dir:
+        remove(path=file_dir[0])
         return True
+
     return False
-
-# async def update_post_data(id: str, data: dict):
-#     post = await post_collection.find_one({'_id': ObjectId(id)})
-#     if post:
-#         post_collection.update_one({'_id': ObjectId(id)}, {'$set': data})
-#         return True
-
-# async def update_image(file: UploadFile = File(...)):
-#     image_dir = os.path.join(DEFAULT_DIR, file.filename)
-#     if os.path.exists(path=image_dir):
-#         os.remove(path=image_dir)
-#     else:
-#         raise HTTPException(
-#             status_code=404,
-#             detail='Image file not found.',
-#         )
-
-    # check_extension(file=file)
-
-    # imagefile = await file.read()
-    # image = read_imagefile(file=imagefile)
-
-    # image.save(os.path.join(DEFAULT_DIR, file.filename))
-
-    # return {
-    #     'updated': True
-    # }
