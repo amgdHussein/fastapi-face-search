@@ -1,13 +1,10 @@
-from face_search.search import search
+from __init__ import THRESHOLD
 from PIL.Image import Image
 
+from face_search.search import search
 
-# maximum difference
-THRESHOLD = 0.6
 
 # start search
-
-
 async def fetch_person(image: Image, threshold: float = THRESHOLD):
     results = await search(image=image)
     filter_results = list(

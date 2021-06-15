@@ -1,7 +1,10 @@
-import face_recognition
+from os.path import basename, splitext
+
+from database.database import read_images
 from numpy import array, asarray
 from PIL.Image import Image
-from database.database import retrieve_images
+
+import face_recognition
 
 
 def image_to_code(image: array):
@@ -9,7 +12,7 @@ def image_to_code(image: array):
 
 
 # Start engine
-async def search(image: Image):
+async def search(image: Image) -> tuple:
     '''
     Detector isn't able to find a face in the image:
         1. The face is turned sideways or upside-down
@@ -21,8 +24,8 @@ async def search(image: Image):
     unknown_image = asarray(image)
 
     # read all known people images
-    known_people_images = await retrieve_images()
-    names = list(map(lambda image: image.filename, known_people_images))
+    known_people_images = await read_images()
+    names = list(map(lambda image: splitext(basename(image.filename))[0], known_people_images))
     known_people_images = list(map(asarray, known_people_images))
     # for each person fetch and encode face
     known_people_encodings = list(map(image_to_code, known_people_images))
