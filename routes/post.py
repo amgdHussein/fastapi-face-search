@@ -8,9 +8,9 @@ from models.responses import *
 router = APIRouter()
 
 
-@router.get('/database/retrieve/image/{file_name}', response_description='Image data retrieved')
-async def get_image(file_name: str):
-    image_path = await retrieve_image(file_name=file_name)
+@router.get('/filesys/retrieve/image/{pid}', response_description='Image retrieved')
+async def get_image(pid: str):
+    image_path = await retrieve_image(file_name=pid)
     if image_path:
         return FileResponse(path=image_path)
 
@@ -21,7 +21,7 @@ async def get_image(file_name: str):
     )
 
 
-@router.post('/database/add/image/', response_description='Image data added')
+@router.post('/filesys/add/image/', response_description='Image added')
 async def add_image(pid: str, file: UploadFile = File(...)):
     try:
         image = await read_image_file(file=file)
@@ -39,7 +39,7 @@ async def add_image(pid: str, file: UploadFile = File(...)):
         )
 
 
-@router.delete('/database/delete/image/{pid}', response_description='Image data deleted')
+@router.delete('/filesys/delete/image/{pid}', response_description='Image deleted')
 async def delete_image(pid: str):
     isdeleted = await delete_image_file(file_name=pid)
     if isdeleted:
