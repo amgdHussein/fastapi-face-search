@@ -36,8 +36,9 @@ async def add_image_file(image: Image.Image, pid: str) -> str:
 
 async def retrieve_image(file_name: str) -> str:
     dir = join(DEFAULT_DIR, file_name)
-    if exists(dir):
-        return dir
+    file_dir = glob.glob(dir + '.*')
+    if len(file_dir) > 0:
+        return file_dir[0]
 
 
 async def delete_image_file(file_name: str) -> bool:

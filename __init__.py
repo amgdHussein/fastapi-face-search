@@ -7,5 +7,5 @@ THRESHOLD = 0.6
 DEFAULT_DIR = join('database', 'images')
 
 # url config
-HOST = '192.168.1.6'
+HOST = '192.168.1.8'
 PORT = 8080

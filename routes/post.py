@@ -71,3 +71,17 @@ async def recognize_image(file: UploadFile = File(...)):
             code=422,
             message=error.args[0],
         )
+
+
+@router.post('/recognize/is_valid/image/', response_description='Image validation')
+async def add_image(file: UploadFile = File(...)):
+    try:
+        image = await read_image_file(file=file)
+        return ResponseValidatedImage(is_valid=True)
+
+    except Exception as error:
+        return ErrorResponseModel(
+            error='An error occured.',
+            code=422,
+            message=error.args[0],
+        )
