@@ -31,7 +31,7 @@ async def add_image_file(image: Image.Image, pid: str) -> str:
     dir = join(DEFAULT_DIR, file_name)
     image.save(dir)
 
-    return f'http://{HOST}:{PORT}/api/database/retrieve/image/{file_name}'
+    return f'http://{HOST}:{PORT}/api/filesys/retrieve/image/{pid}'
 
 
 async def retrieve_image(file_name: str) -> str:
