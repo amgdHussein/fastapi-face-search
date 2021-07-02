@@ -1,3 +1,4 @@
+from numpy import percentile
 from database.database import *
 from database.database_helper import read_image_file
 from face_search.face_recognition import fetch_person
@@ -62,6 +63,7 @@ async def recognize_image(file: UploadFile = File(...)):
         predictions = await fetch_person(image=image)
         return ResponseRecognitionModel(
             ids=[id for id, diff in predictions],
+            differences=[diff for id, diff in predictions],
             message='Image recognized successfully',
         )
 

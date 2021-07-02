@@ -14,9 +14,8 @@ from PIL import Image
 async def read_images() -> list:
     images = []
     for image_name in listdir(DEFAULT_DIR):
-        known_person = await read_image(file_name=image_name)
+        known_person = Image.open(join(DEFAULT_DIR, image_name))
         images.append(known_person)
-
     return images
 
 

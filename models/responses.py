@@ -5,6 +5,7 @@ def ResponseAddModel(download_link, message) -> dict:
         "message": message,
     }
 
+
 def ResponseDeleteModel(data, message) -> dict:
     return {
         "deleted": data,
@@ -12,18 +13,22 @@ def ResponseDeleteModel(data, message) -> dict:
         "message": message,
     }
 
-def ResponseRecognitionModel(ids, message) -> dict:
+
+def ResponseRecognitionModel(ids, differences, message) -> dict:
     return {
         "pids": ids,
+        "differences": differences,
         "code": 200,
         "message": message,
     }
+
 
 def ResponseValidatedImage(is_valid) -> dict:
     return {
         "valid": is_valid,
         "code": 200,
     }
+
 
 def ErrorResponseModel(error, code, message) -> dict:
     return {
